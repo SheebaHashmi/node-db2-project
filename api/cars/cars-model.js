@@ -4,9 +4,9 @@ const getAll = () => {
   return db('cars');
 }
 
-const getById = (id) => {
+const getById = async (id) => {
   // DO YOUR MAGIC
-  return db().where('id',id)
+  return await db('cars').where('id',id).first()
 }
 
 const create = async (changes) => {
