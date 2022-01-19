@@ -1,6 +1,11 @@
 // DO YOUR MAGIC
 const Cars = require('./cars-model')
-const {checkCarId} = require('./cars-middleware')
+const {
+    checkCarId,
+    checkCarPayload,
+    checkVinNumberValid,
+    checkVinNumberUnique
+  } = require('./cars-middleware')
 const router = require('express').Router();
 
 router.get('/',async(req,res,next) => {
@@ -14,13 +19,17 @@ router.get('/',async(req,res,next) => {
 })
 
 router.get('/:id',checkCarId,(req,res)=> {
- 
-        res.json(req.car)
-    
+        res.json(req.car) 
 })
 
-router.post('/',(req,res)=> {
-
+router.post('/',checkCarPayload,checkVinNumberValid,checkVinNumberUnique,async(req,res,next)=> {
+    try{
+        const newCar = await Cars.create(req.body)
+        res.json(newCar)
+    }
+    catch(err){
+        next(err)
+    }
 })
 
 router.use((err,req,res,next)=> { // eslint-disable-line
